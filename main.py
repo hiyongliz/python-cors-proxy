@@ -1,4 +1,3 @@
-import json
 import logging
 import os
 
@@ -40,9 +39,6 @@ async def generate_image_stream(req: Request):
     """
     req_json = await req.json()
     req_json.setdefault("size", "16:9")
-
-    with open("request_log.json", "w", encoding="utf-8") as f:
-        json.dump(req_json, f, ensure_ascii=False, indent=2)
 
     # 2. 构造 Headers (伪装成浏览器，防止 Cloudflare 拦截)
     headers = {
