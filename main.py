@@ -45,7 +45,8 @@ async def generate_image_stream(req: Request):
         "Authorization": f"Bearer {req.headers.get('authorization', '').split(' ')[1]}",
         "Content-Type": "application/json",
         "Accept": "text/event-stream",
-        "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123.0.0.0 Safari/537.36",
+        # "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123.0.0.0 Safari/537.36",
+        "User-Agent": req.headers.get("user-agent", "fastapi-httpx-client"),
     }
 
     # httpx 的单位是秒
@@ -61,7 +62,7 @@ async def generate_image_stream(req: Request):
                 ) as response:
                     # 如果上游报错 (如 401, 400)，直接透传错误信息
                     if response.status_code != 200:
-                        error_msg = await response.read()
+                        error_msg = response.read()
                         yield f"Error {response.status_code}: {error_msg.decode()}".encode()
                         return
 
